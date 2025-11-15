@@ -1,13 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ITrip } from '@/models/Trip'
-import { IPurchase } from '@/models/Purchase'
-import { IVehicle } from '@/models/Vehicle'
+import { ITripWithId, IPurchaseWithId, IVehicleWithId } from '@/types'
 
 interface ExportButtonProps {
-  vehicle: IVehicle
-  trips: ITrip[]
+  vehicle: IVehicleWithId
+  trips: ITripWithId[]
   selectedMonth?: string
 }
 
@@ -26,7 +24,7 @@ export default function ExportButton({ vehicle, trips, selectedMonth }: ExportBu
         
         // Filter by month if specified
         if (month) {
-          purchases = purchases.filter((purchase: IPurchase) => {
+          purchases = purchases.filter((purchase: IPurchaseWithId) => {
             const purchaseMonth = new Date(purchase.date).toISOString().slice(0, 7)
             return purchaseMonth === month
           })
@@ -135,7 +133,7 @@ export default function ExportButton({ vehicle, trips, selectedMonth }: ExportBu
 
         case 'purchases':
           const purchases = await fetchAllPurchases(vehicle._id!, selectedMonth)
-          const purchasesData = purchases.map((purchase: IPurchase) => ({
+          const purchasesData = purchases.map((purchase: IPurchaseWithId) => ({
             'Date': new Date(purchase.date).toLocaleDateString(),
             'Trip Name': purchase.tripName,
             'Vehicle': `${purchase.vehicleName} (${purchase.vehicleNumber})`,

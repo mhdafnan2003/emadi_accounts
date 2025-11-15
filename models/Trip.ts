@@ -1,7 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose, { Document, Model } from 'mongoose'
 
 export interface ITrip {
-  _id?: string
   vehicleId: string
   vehicleName: string
   vehicleNumber: string
@@ -16,11 +15,13 @@ export interface ITrip {
   profitLoss: number
   isProfitable: boolean
   hasReachedBreakeven: boolean
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-const TripSchema = new mongoose.Schema<ITrip>({
+export interface ITripDocument extends ITrip, Document {}
+
+const TripSchema = new mongoose.Schema<ITripDocument>({
   vehicleId: {
     type: String,
     required: [true, 'Vehicle ID is required'],
@@ -87,4 +88,6 @@ const TripSchema = new mongoose.Schema<ITrip>({
   timestamps: true,
 })
 
-export default mongoose.models.Trip || mongoose.model<ITrip>('Trip', TripSchema)
+const Trip: Model<ITripDocument> = mongoose.models.Trip || mongoose.model<ITripDocument>('Trip', TripSchema)
+
+export default Trip

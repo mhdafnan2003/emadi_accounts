@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ICategory } from '@/models/Category'
+import { ICategoryWithId } from '@/types'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
@@ -9,16 +9,16 @@ import { LoadingCard } from '@/components/ui/LoadingSpinner'
 import { formatDate } from '@/lib/utils'
 
 interface CategoryListProps {
-  categories: ICategory[]
+  categories: ICategoryWithId[]
   loading: boolean
-  onEdit: (category: ICategory) => void
+  onEdit: (category: ICategoryWithId) => void
   onDelete: (categoryId: string) => void
 }
 
 export default function CategoryList({ categories, loading, onEdit, onDelete }: CategoryListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (category: ICategory) => {
+  const handleDelete = async (category: ICategoryWithId) => {
     if (!category._id) return
     
     if (!confirm(`Are you sure you want to delete "${category.name}" category?`)) {

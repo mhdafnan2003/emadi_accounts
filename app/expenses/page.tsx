@@ -3,19 +3,17 @@
 import React, { useState, useEffect } from 'react'
 import ExpenseForm from '@/components/ExpenseForm'
 import ExpenseList from '@/components/ExpenseList'
-import { IExpense } from '@/models/Expense'
-import { IVehicle } from '@/models/Vehicle'
-import { ICategory } from '@/models/Category'
+import { IExpenseWithId, IVehicleWithId, ICategoryWithId } from '@/types'
 import { formatSAR, formatNumber } from '@/lib/utils'
 
 export default function ExpensesPage() {
-  const [expenses, setExpenses] = useState<IExpense[]>([])
-  const [filteredExpenses, setFilteredExpenses] = useState<IExpense[]>([])
-  const [vehicles, setVehicles] = useState<IVehicle[]>([])
-  const [categories, setCategories] = useState<ICategory[]>([])
+  const [expenses, setExpenses] = useState<IExpenseWithId[]>([])
+  const [filteredExpenses, setFilteredExpenses] = useState<IExpenseWithId[]>([])
+  const [vehicles, setVehicles] = useState<IVehicleWithId[]>([])
+  const [categories, setCategories] = useState<ICategoryWithId[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [editingExpense, setEditingExpense] = useState<IExpense | null>(null)
+  const [editingExpense, setEditingExpense] = useState<IExpenseWithId | null>(null)
   const [filterType, setFilterType] = useState<'all' | 'investment' | 'revenue' | 'other'>('all')
   const [selectedVehicle, setSelectedVehicle] = useState<string>('')
 
@@ -64,15 +62,15 @@ export default function ExpensesPage() {
     fetchCategories()
   }, [])
 
-  const handleExpenseAdded = (newExpense: IExpense) => {
+  const handleExpenseAdded = (newExpense: IExpenseWithId) => {
     const updatedExpenses = [newExpense, ...expenses]
     setExpenses(updatedExpenses)
     applyFilters(updatedExpenses)
     setShowForm(false)
   }
 
-  const handleExpenseUpdated = (updatedExpense: IExpense) => {
-    const updatedExpenses = expenses.map((exp: IExpense) => 
+  const handleExpenseUpdated = (updatedExpense: IExpenseWithId) => {
+    const updatedExpenses = expenses.map((exp: IExpenseWithId) => 
       exp._id === updatedExpense._id ? updatedExpense : exp
     )
     setExpenses(updatedExpenses)
@@ -82,12 +80,12 @@ export default function ExpensesPage() {
   }
 
   const handleExpenseDeleted = (deletedId: string) => {
-    const updatedExpenses = expenses.filter((exp: IExpense) => exp._id !== deletedId)
+    const updatedExpenses = expenses.filter((exp: IExpenseWithId) => exp._id !== deletedId)
     setExpenses(updatedExpenses)
     applyFilters(updatedExpenses)
   }
 
-  const applyFilters = (expenseList: IExpense[]) => {
+  const applyFilters = (expenseList: IExpenseWithId[]) => {
     let filtered = [...expenseList]
 
     // Filter by expense type
@@ -117,7 +115,7 @@ export default function ExpensesPage() {
     applyFilters(expenses)
   }, [filterType, selectedVehicle, expenses])
 
-  const handleEdit = (expense: IExpense) => {
+  const handleEdit = (expense: IExpenseWithId) => {
     setEditingExpense(expense)
     setShowForm(true)
   }
@@ -127,11 +125,11 @@ export default function ExpensesPage() {
     setShowForm(false)
   }
 
-  const totalExpenses = filteredExpenses.reduce((sum: number, expense: IExpense) => sum + expense.amount, 0)
+  const totalExpenses = filteredExpenses.reduce((sum: number, expense: IExpenseWithId) => sum + expense.amount, 0)
   const tripExpenses = filteredExpenses.filter(exp => exp.tripId)
-  const investmentTotal = filteredExpenses.filter(exp => exp.expenseType === 'investment').reduce((sum: number, exp: IExpense) => sum + exp.amount, 0)
-  const revenueTotal = filteredExpenses.filter(exp => exp.expenseType === 'revenue').reduce((sum: number, exp: IExpense) => sum + exp.amount, 0)
-  const otherTotal = filteredExpenses.filter(exp => exp.expenseType === 'other' || !exp.expenseType).reduce((sum: number, exp: IExpense) => sum + exp.amount, 0)
+  const investmentTotal = filteredExpenses.filter(exp => exp.expenseType === 'investment').reduce((sum: number, exp: IExpenseWithId) => sum + exp.amount, 0)
+  const revenueTotal = filteredExpenses.filter(exp => exp.expenseType === 'revenue').reduce((sum: number, exp: IExpenseWithId) => sum + exp.amount, 0)
+  const otherTotal = filteredExpenses.filter(exp => exp.expenseType === 'other' || !exp.expenseType).reduce((sum: number, exp: IExpenseWithId) => sum + exp.amount, 0)
 
   return (
     <div>

@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ICategory } from '@/models/Category'
+import { ICategoryWithId } from '@/types'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 
 interface CategoryFormProps {
-  category?: ICategory | null
-  onCategoryAdded: (category: ICategory) => void
-  onCategoryUpdated: (category: ICategory) => void
+  category?: ICategoryWithId | null
+  onCategoryAdded: (category: ICategoryWithId) => void
+  onCategoryUpdated: (category: ICategoryWithId) => void
   onCancel?: () => void
 }
 

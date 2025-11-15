@@ -1,16 +1,14 @@
 'use client'
 
 import React from 'react'
-import { IExpense } from '@/models/Expense'
-import { IVehicle } from '@/models/Vehicle'
-import { ICategory } from '@/models/Category'
+import { IExpenseWithId, IVehicleWithId, ICategoryWithId } from '@/types'
 
 interface ExpenseFormProps {
-  vehicles: IVehicle[]
-  categories: ICategory[]
-  expense?: IExpense | null
-  onExpenseAdded: (expense: IExpense) => void
-  onExpenseUpdated: (expense: IExpense) => void
+  vehicles: IVehicleWithId[]
+  categories: ICategoryWithId[]
+  expense?: IExpenseWithId | null
+  onExpenseAdded: (expense: IExpenseWithId) => void
+  onExpenseUpdated: (expense: IExpenseWithId) => void
   onCancel?: () => void
 }
 

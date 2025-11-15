@@ -1,14 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ITrip } from '@/models/Trip'
-import { IVehicle } from '@/models/Vehicle'
+import { ITripWithId, IVehicleWithId } from '@/types'
 
 interface TripFormProps {
-  vehicle: IVehicle
-  trip?: ITrip | null
-  onTripAdded: (trip: ITrip) => void
-  onTripUpdated: (trip: ITrip) => void
+  vehicle: IVehicleWithId
+  trip?: ITripWithId | null
+  onTripAdded: (trip: ITripWithId) => void
+  onTripUpdated: (trip: ITripWithId) => void
   onCancel?: () => void
 }
 

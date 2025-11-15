@@ -1,20 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
-import { IPurchase } from '@/models/Purchase'
+import { IPurchaseWithId } from '@/types'
 import { formatSAR, formatLitres } from '@/lib/utils'
 
 interface PurchaseListProps {
-  purchases: IPurchase[]
+  purchases: IPurchaseWithId[]
   loading: boolean
-  onEdit: (purchase: IPurchase) => void
+  onEdit: (purchase: IPurchaseWithId) => void
   onDelete: (purchaseId: string) => void
 }
 
 export default function PurchaseList({ purchases, loading, onEdit, onDelete }: PurchaseListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (purchase: IPurchase) => {
+  const handleDelete = async (purchase: IPurchaseWithId) => {
     if (!purchase._id) return
     
     if (!confirm(`Are you sure you want to delete this ${purchase.type.toLowerCase()} transaction?`)) {

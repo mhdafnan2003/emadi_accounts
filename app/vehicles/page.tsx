@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import VehicleForm from '@/components/VehicleForm'
 import VehicleList from '@/components/VehicleList'
-import { IVehicle } from '@/models/Vehicle'
+import { IVehicleWithId } from '@/types'
 
 export default function VehiclesPage() {
-  const [vehicles, setVehicles] = useState<IVehicle[]>([])
+  const [vehicles, setVehicles] = useState<IVehicleWithId[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [editingVehicle, setEditingVehicle] = useState<IVehicle | null>(null)
+  const [editingVehicle, setEditingVehicle] = useState<IVehicleWithId | null>(null)
 
   const fetchVehicles = async () => {
     try {
@@ -29,12 +29,12 @@ export default function VehiclesPage() {
     fetchVehicles()
   }, [])
 
-  const handleVehicleAdded = (newVehicle: IVehicle) => {
+  const handleVehicleAdded = (newVehicle: IVehicleWithId) => {
     setVehicles([newVehicle, ...vehicles])
     setShowForm(false)
   }
 
-  const handleVehicleUpdated = (updatedVehicle: IVehicle) => {
+  const handleVehicleUpdated = (updatedVehicle: IVehicleWithId) => {
     setVehicles(vehicles.map(veh => 
       veh._id === updatedVehicle._id ? updatedVehicle : veh
     ))
@@ -46,7 +46,7 @@ export default function VehiclesPage() {
     setVehicles(vehicles.filter(veh => veh._id !== deletedId))
   }
 
-  const handleEdit = (vehicle: IVehicle) => {
+  const handleEdit = (vehicle: IVehicleWithId) => {
     setEditingVehicle(vehicle)
     setShowForm(true)
   }

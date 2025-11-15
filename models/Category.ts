@@ -1,14 +1,15 @@
-import mongoose from 'mongoose'
+import mongoose, { Document, Model } from 'mongoose'
 
 export interface ICategory {
-  _id?: string
   name: string
   description?: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-const CategorySchema = new mongoose.Schema<ICategory>({
+export interface ICategoryDocument extends ICategory, Document {}
+
+const CategorySchema = new mongoose.Schema<ICategoryDocument>({
   name: {
     type: String,
     required: [true, 'Category name is required'],
@@ -23,4 +24,6 @@ const CategorySchema = new mongoose.Schema<ICategory>({
   timestamps: true,
 })
 
-export default mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema)
+const Category: Model<ICategoryDocument> = mongoose.models.Category || mongoose.model<ICategoryDocument>('Category', CategorySchema)
+
+export default Category

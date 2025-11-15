@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ITrip } from '@/models/Trip'
-import { IVehicle } from '@/models/Vehicle'
+import { ITripWithId, IVehicleWithId } from '@/types'
 
 interface AddToExpenseButtonProps {
-  vehicle: IVehicle
-  trip: ITrip
+  vehicle: IVehicleWithId
+  trip: ITripWithId
   onExpenseAdded?: () => void
 }
 

@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { IVehicle } from '@/models/Vehicle'
+import { IVehicleWithId } from '@/types'
 import Link from 'next/link'
 
 export default function PurchasesPage() {
-  const [vehicles, setVehicles] = useState<IVehicle[]>([])
+  const [vehicles, setVehicles] = useState<IVehicleWithId[]>([])
   const [loading, setLoading] = useState(true)
 
   const fetchVehicles = async () => {

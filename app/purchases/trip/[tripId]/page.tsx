@@ -4,27 +4,27 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import PurchaseForm from '@/components/PurchaseForm'
 import PurchaseList from '@/components/PurchaseList'
+import { IPurchaseWithId, ITripWithId, IVehicleWithId } from '@/types'
 import { IPurchase } from '@/models/Purchase'
 import { ITrip } from '@/models/Trip'
-import { IVehicle } from '@/models/Vehicle'
 
 export default function TripDetailPage() {
   const params = useParams()
   const router = useRouter()
   const tripId = params.tripId as string
 
-  const [trip, setTrip] = useState<ITrip | null>(null)
-  const [purchases, setPurchases] = useState<IPurchase[]>([])
+  const [trip, setTrip] = useState<ITripWithId | null>(null)
+  const [purchases, setPurchases] = useState<IPurchaseWithId[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [editingPurchase, setEditingPurchase] = useState<IPurchase | null>(null)
+  const [editingPurchase, setEditingPurchase] = useState<IPurchaseWithId | null>(null)
 
   const fetchTrip = async () => {
     try {
       const response = await fetch('/api/trips')
       const data = await response.json()
       if (data.success) {
-        const foundTrip = data.data.find((t: ITrip) => t._id === tripId)
+        const foundTrip = data.data.find((t: ITripWithId) => t._id === tripId)
         if (foundTrip) {
           setTrip(foundTrip)
         } else {
@@ -51,7 +51,7 @@ export default function TripDetailPage() {
     }
   }
 
-  const calculateTripStats = (currentPurchases: IPurchase[]) => {
+  const calculateTripStats = (currentPurchases: IPurchaseWithId[]) => {
     console.log('Calculating stats for purchases:', currentPurchases)
     
     const totalPurchases = currentPurchases.filter(p => p.type === 'Purchase').reduce((sum, p) => sum + p.price, 0)
@@ -123,14 +123,14 @@ export default function TripDetailPage() {
   useEffect(() => {
     if (trip && purchases.length > 0) {
       const stats = calculateTripStats(purchases)
-      setTrip((prevTrip: ITrip | null) => prevTrip ? {
+      setTrip((prevTrip: ITripWithId | null) => prevTrip ? {
         ...prevTrip,
         ...stats
       } : null)
     }
   }, [purchases, trip?._id]) // Only depend on trip ID to avoid infinite loops
 
-  const handlePurchaseAdded = (newPurchase: IPurchase) => {
+  const handlePurchaseAdded = (newPurchase: IPurchaseWithId) => {
     const updatedPurchases = [newPurchase, ...purchases]
     setPurchases(updatedPurchases)
     setShowForm(false)
@@ -148,8 +148,8 @@ export default function TripDetailPage() {
     updateTripStats()
   }
 
-  const handlePurchaseUpdated = (updatedPurchase: IPurchase) => {
-    const updatedPurchases = purchases.map((p: IPurchase) => 
+  const handlePurchaseUpdated = (updatedPurchase: IPurchaseWithId) => {
+    const updatedPurchases = purchases.map((p: IPurchaseWithId) => 
       p._id === updatedPurchase._id ? updatedPurchase : p
     )
     setPurchases(updatedPurchases)
@@ -170,7 +170,7 @@ export default function TripDetailPage() {
   }
 
   const handlePurchaseDeleted = (deletedId: string) => {
-    const updatedPurchases = purchases.filter((p: IPurchase) => p._id !== deletedId)
+    const updatedPurchases = purchases.filter((p: IPurchaseWithId) => p._id !== deletedId)
     setPurchases(updatedPurchases)
     
     // Calculate and update stats immediately
@@ -186,7 +186,7 @@ export default function TripDetailPage() {
     updateTripStats()
   }
 
-  const handleEdit = (purchase: IPurchase) => {
+  const handleEdit = (purchase: IPurchaseWithId) => {
     setEditingPurchase(purchase)
     setShowForm(true)
   }
@@ -208,7 +208,7 @@ export default function TripDetailPage() {
   }
 
   // Create a mock vehicle object for the form
-  const vehicle: IVehicle = {
+  const vehicle: IVehicleWithId = {
     _id: trip.vehicleId,
     vehicleName: trip.vehicleName,
     vehicleNumber: trip.vehicleNumber,
@@ -331,7 +331,7 @@ export default function TripDetailPage() {
         </div>
       </div>
 
-      {/* Trip Progress */}
+      {/* Trip Progress */}   
       {/* <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Trip Progress</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

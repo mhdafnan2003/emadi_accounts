@@ -1,13 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { IVehicle } from '@/models/Vehicle'
-import { ITrip } from '@/models/Trip'
-import { IPurchase } from '@/models/Purchase'
+import { IVehicleWithId, ITripWithId, IPurchaseWithId } from '@/types'
 
 interface QuickTripFormProps {
-  vehicle: IVehicle
-  onTripCreated: (trip: ITrip) => void
+  vehicle: IVehicleWithId
+  onTripCreated: (trip: ITripWithId) => void
   onCancel: () => void
 }
 

@@ -1,19 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { IVehicle } from '@/models/Vehicle'
+import { IVehicleWithId } from '@/types'
 
 interface VehicleListProps {
-  vehicles: IVehicle[]
+  vehicles: IVehicleWithId[]
   loading: boolean
-  onEdit: (vehicle: IVehicle) => void
+  onEdit: (vehicle: IVehicleWithId) => void
   onDelete: (vehicleId: string) => void
 }
 
 export default function VehicleList({ vehicles, loading, onEdit, onDelete }: VehicleListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (vehicle: IVehicle) => {
+  const handleDelete = async (vehicle: IVehicleWithId) => {
     if (!vehicle._id) return
     
     if (!confirm(`Are you sure you want to delete "${vehicle.vehicleName}"?`)) {

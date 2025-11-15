@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { IVehicle } from '@/models/Vehicle'
+import { IVehicleWithId } from '@/types'
 
 interface VehicleFormProps {
-  vehicle?: IVehicle | null
-  onVehicleAdded: (vehicle: IVehicle) => void
-  onVehicleUpdated: (vehicle: IVehicle) => void
+  vehicle?: IVehicleWithId | null
+  onVehicleAdded: (vehicle: IVehicleWithId) => void
+  onVehicleUpdated: (vehicle: IVehicleWithId) => void
   onCancel?: () => void
 }
 

@@ -1,22 +1,21 @@
 'use client'
 
 import React, { useState } from 'react'
-import { IExpense } from '@/models/Expense'
-import { ICategory } from '@/models/Category'
+import { IExpenseWithId, ICategoryWithId } from '@/types'
 import { formatSAR } from '@/lib/utils'
 
 interface ExpenseListProps {
-  expenses: IExpense[]
-  categories: ICategory[]
+  expenses: IExpenseWithId[]
+  categories: ICategoryWithId[]
   loading: boolean
-  onEdit: (expense: IExpense) => void
+  onEdit: (expense: IExpenseWithId) => void
   onDelete: (expenseId: string) => void
 }
 
 export default function ExpenseList({ expenses, categories, loading, onEdit, onDelete }: ExpenseListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (expense: IExpense) => {
+  const handleDelete = async (expense: IExpenseWithId) => {
     if (!expense._id) return
     
     if (!confirm(`Are you sure you want to delete "${expense.title}"?`)) {

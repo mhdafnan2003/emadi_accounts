@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { IPurchase } from '@/models/Purchase'
-import { IVehicle } from '@/models/Vehicle'
+import { IPurchaseWithId, IVehicleWithId } from '@/types'
 
 export default function SalesReportPage() {
   const router = useRouter()
-  const [vehicles, setVehicles] = useState<IVehicle[]>([])
-  const [allPurchases, setAllPurchases] = useState<IPurchase[]>([])
-  const [filteredSales, setFilteredSales] = useState<IPurchase[]>([])
+  const [vehicles, setVehicles] = useState<IVehicleWithId[]>([])
+  const [allPurchases, setAllPurchases] = useState<IPurchaseWithId[]>([])
+  const [filteredSales, setFilteredSales] = useState<IPurchaseWithId[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
     vehicleId: '',
@@ -31,7 +30,7 @@ export default function SalesReportPage() {
       const purchasesResponse = await fetch('/api/purchases')
       const purchasesData = await purchasesResponse.json()
       if (purchasesData.success) {
-        const salesOnly = purchasesData.data.filter((p: IPurchase) => p.type === 'Sales')
+        const salesOnly = purchasesData.data.filter((p: IPurchaseWithId) => p.type === 'Sales')
         setAllPurchases(salesOnly)
         setFilteredSales(salesOnly)
       }

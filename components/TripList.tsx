@@ -1,24 +1,23 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ITrip } from '@/models/Trip'
-import { IVehicle } from '@/models/Vehicle'
+import { ITripWithId, IVehicleWithId } from '@/types'
 import Link from 'next/link'
 import AddToExpenseButton from './AddToExpenseButton'
 
 interface TripListProps {
-  trips: ITrip[]
+  trips: ITripWithId[]
   loading: boolean
   onDelete: (tripId: string) => void
-  onTripUpdated?: (trip: ITrip) => void
-  vehicle?: IVehicle
+  onTripUpdated?: (trip: ITripWithId) => void
+  vehicle?: IVehicleWithId
 }
 
 export default function TripList({ trips, loading, onDelete, onTripUpdated, vehicle }: TripListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [completingId, setCompletingId] = useState<string | null>(null)
 
-  const handleDelete = async (trip: ITrip) => {
+  const handleDelete = async (trip: ITripWithId) => {
     if (!trip._id) return
     
     if (!confirm(`Are you sure you want to delete trip "${trip.tripName}"? This will also delete all associated purchases and sales.`)) {
@@ -46,7 +45,7 @@ export default function TripList({ trips, loading, onDelete, onTripUpdated, vehi
     }
   }
 
-  const handleCompleteTrip = async (trip: ITrip) => {
+  const handleCompleteTrip = async (trip: ITripWithId) => {
     if (!trip._id) return
     
     const action = trip.status === 'Active' ? 'complete' : 'reactivate'
@@ -85,7 +84,7 @@ export default function TripList({ trips, loading, onDelete, onTripUpdated, vehi
     }
   }
 
-  const getTripDuration = (trip: ITrip) => {
+  const getTripDuration = (trip: ITripWithId) => {
     const start = new Date(trip.startDate)
     const end = trip.endDate ? new Date(trip.endDate) : new Date()
     const diffTime = Math.abs(end.getTime() - start.getTime())

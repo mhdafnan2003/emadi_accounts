@@ -3,15 +3,15 @@
 import * as React from 'react'
 import CategoryForm from '@/components/CategoryForm'
 import CategoryList from '@/components/CategoryList'
-import { ICategory } from '@/models/Category'
+import { ICategoryWithId } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = React.useState<ICategory[]>([])
+  const [categories, setCategories] = React.useState<ICategoryWithId[]>([])
   const [loading, setLoading] = React.useState(true)
   const [showForm, setShowForm] = React.useState(false)
-  const [editingCategory, setEditingCategory] = React.useState<ICategory | null>(null)
+  const [editingCategory, setEditingCategory] = React.useState<ICategoryWithId | null>(null)
 
   const fetchCategories = async () => {
     try {
@@ -31,12 +31,12 @@ export default function CategoriesPage() {
     fetchCategories()
   }, [])
 
-  const handleCategoryAdded = (newCategory: ICategory) => {
+  const handleCategoryAdded = (newCategory: ICategoryWithId) => {
     setCategories([...categories, newCategory])
     setShowForm(false)
   }
 
-  const handleCategoryUpdated = (updatedCategory: ICategory) => {
+  const handleCategoryUpdated = (updatedCategory: ICategoryWithId) => {
     setCategories(categories.map(cat => 
       cat._id === updatedCategory._id ? updatedCategory : cat
     ))
@@ -48,7 +48,7 @@ export default function CategoriesPage() {
     setCategories(categories.filter(cat => cat._id !== deletedId))
   }
 
-  const handleEdit = (category: ICategory) => {
+  const handleEdit = (category: ICategoryWithId) => {
     setEditingCategory(category)
     setShowForm(true)
   }

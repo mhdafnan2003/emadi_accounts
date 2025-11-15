@@ -1,16 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { IPurchase } from '@/models/Purchase'
-import { IVehicle } from '@/models/Vehicle'
-import { ITrip } from '@/models/Trip'
+import { IPurchaseWithId, IVehicleWithId, ITripWithId } from '@/types'
 
 interface PurchaseFormProps {
-  vehicle: IVehicle
-  trip?: ITrip
-  purchase?: IPurchase | null
-  onPurchaseAdded: (purchase: IPurchase) => void
-  onPurchaseUpdated: (purchase: IPurchase) => void
+  vehicle: IVehicleWithId
+  trip?: ITripWithId
+  purchase?: IPurchaseWithId | null
+  onPurchaseAdded: (purchase: IPurchaseWithId) => void
+  onPurchaseUpdated: (purchase: IPurchaseWithId) => void
   onCancel?: () => void
 }
 

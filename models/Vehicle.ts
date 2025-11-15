@@ -1,16 +1,17 @@
-import mongoose from 'mongoose'
+import mongoose, { Document, Model } from 'mongoose'
 
 export interface IVehicle {
-  _id?: string
   vehicleName: string
   vehicleNumber: string
   driverName: string
   coPassengerName: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-const VehicleSchema = new mongoose.Schema<IVehicle>({
+export interface IVehicleDocument extends IVehicle, Document {}
+
+const VehicleSchema = new mongoose.Schema<IVehicleDocument>({
   vehicleName: {
     type: String,
     required: [true, 'Vehicle name is required'],
@@ -37,4 +38,6 @@ const VehicleSchema = new mongoose.Schema<IVehicle>({
   timestamps: true,
 })
 
-export default mongoose.models.Vehicle || mongoose.model<IVehicle>('Vehicle', VehicleSchema)
+const Vehicle: Model<IVehicleDocument> = mongoose.models.Vehicle || mongoose.model<IVehicleDocument>('Vehicle', VehicleSchema)
+
+export default Vehicle

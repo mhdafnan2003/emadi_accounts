@@ -1,7 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose, { Document, Model } from 'mongoose'
 
 export interface IPurchase {
-  _id?: string
   tripId: string
   tripName: string
   vehicleId: string
@@ -11,11 +10,13 @@ export interface IPurchase {
   price: number
   litre: number
   type: 'Purchase' | 'Sales'
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-const PurchaseSchema = new mongoose.Schema<IPurchase>({
+export interface IPurchaseDocument extends IPurchase, Document {}
+
+const PurchaseSchema = new mongoose.Schema<IPurchaseDocument>({
   tripId: {
     type: String,
     required: [true, 'Trip ID is required'],
@@ -65,4 +66,6 @@ const PurchaseSchema = new mongoose.Schema<IPurchase>({
   timestamps: true,
 })
 
-export default mongoose.models.Purchase || mongoose.model<IPurchase>('Purchase', PurchaseSchema)
+const Purchase: Model<IPurchaseDocument> = mongoose.models.Purchase || mongoose.model<IPurchaseDocument>('Purchase', PurchaseSchema)
+
+export default Purchase

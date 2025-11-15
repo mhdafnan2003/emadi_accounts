@@ -5,8 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import QuickTripForm from '@/components/QuickTripForm'
 import TripList from '@/components/TripList'
 import ExportButton from '@/components/ExportButton'
-import { ITrip } from '@/models/Trip'
-import { IVehicle } from '@/models/Vehicle'
+import { ITripWithId, IVehicleWithId } from '@/types'
 import { formatSAR, formatNumber } from '@/lib/utils'
 
 export default function VehiclePurchasePage() {
@@ -14,9 +13,9 @@ export default function VehiclePurchasePage() {
   const router = useRouter()
   const vehicleId = params.vehicleId as string
 
-  const [vehicle, setVehicle] = useState<IVehicle | null>(null)
-  const [allTrips, setAllTrips] = useState<ITrip[]>([])
-  const [filteredTrips, setFilteredTrips] = useState<ITrip[]>([])
+  const [vehicle, setVehicle] = useState<IVehicleWithId | null>(null)
+  const [allTrips, setAllTrips] = useState<ITripWithId[]>([])
+  const [filteredTrips, setFilteredTrips] = useState<ITripWithId[]>([])
   const [loading, setLoading] = useState(true)
   const [showQuickForm, setShowQuickForm] = useState(false)
   const [selectedMonth, setSelectedMonth] = useState<string>('')
@@ -28,7 +27,7 @@ export default function VehiclePurchasePage() {
       const response = await fetch('/api/vehicles')
       const data = await response.json()
       if (data.success) {
-        const foundVehicle = data.data.find((v: IVehicle) => v._id === vehicleId)
+        const foundVehicle = data.data.find((v: IVehicleWithId) => v._id === vehicleId)
         if (foundVehicle) {
           setVehicle(foundVehicle)
         } else {
@@ -69,7 +68,7 @@ export default function VehiclePurchasePage() {
     }
   }, [vehicleId])
 
-  const handleTripCreated = (newTrip: ITrip) => {
+  const handleTripCreated = (newTrip: ITripWithId) => {
     const updatedTrips = [newTrip, ...allTrips]
     setAllTrips(updatedTrips)
     applyFiltersAndSort(updatedTrips, selectedMonth, sortBy, sortOrder)
@@ -77,13 +76,13 @@ export default function VehiclePurchasePage() {
   }
 
   const handleTripDeleted = (deletedId: string) => {
-    const updatedTrips = allTrips.filter((t: ITrip) => t._id !== deletedId)
+    const updatedTrips = allTrips.filter((t: ITripWithId) => t._id !== deletedId)
     setAllTrips(updatedTrips)
     applyFiltersAndSort(updatedTrips, selectedMonth, sortBy, sortOrder)
   }
 
-  const handleTripUpdated = (updatedTrip: ITrip) => {
-    const updatedTrips = allTrips.map((t: ITrip) => 
+  const handleTripUpdated = (updatedTrip: ITripWithId) => {
+    const updatedTrips = allTrips.map((t: ITripWithId) => 
       t._id === updatedTrip._id ? updatedTrip : t
     )
     setAllTrips(updatedTrips)
@@ -91,7 +90,7 @@ export default function VehiclePurchasePage() {
   }
 
   // Filter and sort trips
-  const applyFiltersAndSort = (trips: ITrip[], month: string, sortField: string, order: string) => {
+  const applyFiltersAndSort = (trips: ITripWithId[], month: string, sortField: string, order: string) => {
     let filtered = [...trips]
 
     // Filter by month
@@ -179,11 +178,11 @@ export default function VehiclePurchasePage() {
 
   // Calculate statistics from filtered trips
   const totalTrips = filteredTrips.length
-  const activeTrips = filteredTrips.filter((t: ITrip) => t.status === 'Active').length
-  const completedTrips = filteredTrips.filter((t: ITrip) => t.status === 'Completed').length
-  const profitableTrips = filteredTrips.filter((t: ITrip) => t.isProfitable).length
-  const totalInvestment = filteredTrips.reduce((sum: number, t: ITrip) => sum + (t.totalPurchases || 0), 0)
-  const totalRevenue = filteredTrips.reduce((sum: number, t: ITrip) => sum + (t.totalSales || 0), 0)
+  const activeTrips = filteredTrips.filter((t: ITripWithId) => t.status === 'Active').length
+  const completedTrips = filteredTrips.filter((t: ITripWithId) => t.status === 'Completed').length
+  const profitableTrips = filteredTrips.filter((t: ITripWithId) => t.isProfitable).length
+  const totalInvestment = filteredTrips.reduce((sum: number, t: ITripWithId) => sum + (t.totalPurchases || 0), 0)
+  const totalRevenue = filteredTrips.reduce((sum: number, t: ITripWithId) => sum + (t.totalSales || 0), 0)
   const overallProfitLoss = totalRevenue - totalInvestment
   const overallProfitable = overallProfitLoss >= 0
 
