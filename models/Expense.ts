@@ -6,6 +6,7 @@ export interface IExpense {
   category: string
   description?: string
   date: Date
+  branchId?: mongoose.Types.ObjectId
   vehicleId?: string
   vehicleName?: string
   tripId?: string
@@ -42,6 +43,10 @@ const ExpenseSchema = new mongoose.Schema<IExpenseDocument>({
     required: [true, 'Date is required'],
     default: Date.now,
   },
+  branchId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Branch',
+  },
   vehicleId: {
     type: String,
     trim: true,
@@ -67,6 +72,15 @@ const ExpenseSchema = new mongoose.Schema<IExpenseDocument>({
   timestamps: true,
 })
 
-const Expense: Model<IExpenseDocument> = mongoose.models.Expense || mongoose.model<IExpenseDocument>('Expense', ExpenseSchema)
+// In Next.js dev (with hot reload), Mongoose can keep an old compiled model
+// that doesn't include newly added fields (e.g., branchId). If that happens,
+// unknown fields will be stripped due to strict schemas.
+const ExistingExpenseModel = mongoose.models.Expense as Model<IExpenseDocument> | undefined
+if (ExistingExpenseModel && !ExistingExpenseModel.schema.path('branchId')) {
+  delete mongoose.models.Expense
+}
+
+const Expense: Model<IExpenseDocument> =
+  (mongoose.models.Expense as Model<IExpenseDocument>) || mongoose.model<IExpenseDocument>('Expense', ExpenseSchema)
 
 export default Expense

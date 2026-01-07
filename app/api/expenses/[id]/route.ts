@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import Expense from '@/models/Expense'
+import mongoose from 'mongoose'
 
 export async function DELETE(
   request: NextRequest,
@@ -8,8 +9,28 @@ export async function DELETE(
 ) {
   try {
     await dbConnect()
+
+    const id = params?.id
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'Missing expense id' },
+        { status: 400 }
+      )
+    }
     
-    const expense = await Expense.findByIdAndDelete(params.id)
+    // Mongoose normally stores `_id` as ObjectId. If legacy/imported data stored `_id` as string,
+    // `findByIdAndDelete` will not match. Try both.
+    let expense: any = await Expense.findByIdAndDelete(id)
+
+    if (!expense) {
+      const legacyDelete = await Expense.collection.findOneAndDelete({ _id: id as any })
+      expense = legacyDelete.value
+    }
+
+    if (!expense && mongoose.Types.ObjectId.isValid(id)) {
+      const oidDelete = await Expense.collection.findOneAndDelete({ _id: new mongoose.Types.ObjectId(id) })
+      expense = oidDelete.value
+    }
     
     if (!expense) {
       return NextResponse.json(

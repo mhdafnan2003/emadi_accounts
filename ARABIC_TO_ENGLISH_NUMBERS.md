@@ -11,9 +11,7 @@
 
 ### 2. Updated Components
 - ✅ **ExpenseList.tsx**: Updated currency display
-- ✅ **PurchaseList.tsx**: Updated currency and litre display
 - ✅ **app/expenses/page.tsx**: Updated all currency displays
-- ✅ **app/purchases/[vehicleId]/page.tsx**: Updated investment, revenue, and profit displays
 
 ### 3. New Helper Functions Available
 
@@ -35,8 +33,6 @@ The following files still contain `toLocaleString()` calls that need to be updat
 1. **components/TripList.tsx**
 2. **components/QuickTripForm.tsx**
 3. **components/AddToExpenseButton.tsx**
-4. **app/purchases/trip/[tripId]/page.tsx**
-5. **app/purchases/sales-report/page.tsx**
 
 ### Update Pattern:
 
@@ -95,13 +91,10 @@ For calculations, wrap them in the formatting function:
 - [ ] Add import: `import { formatSAR } from '@/lib/utils'`
 - [ ] Replace trip investment and revenue displays
 
-### app/purchases/trip/[tripId]/page.tsx
-- [ ] Add import: `import { formatSAR, formatLitres } from '@/lib/utils'`
-- [ ] Replace all stat displays
 
-### app/purchases/sales-report/page.tsx
-- [ ] Add import: `import { formatSAR } from '@/lib/utils'`
-- [ ] Replace revenue displays
+### Notes
+
+Purchase-related pages/components were removed from the project, so they no longer require number-format updates.
 
 ## 🧪 Testing
 

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const navigation = [
   { 
@@ -25,11 +26,21 @@ const navigation = [
     )
   },
   { 
-    name: 'Purchases', 
-    href: '/purchases', 
+    name: 'Purchase & Sale', 
+    href: '/purchase-sales', 
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+      </svg>
+    )
+  },
+  { 
+    name: 'Transactions', 
+    href: '/transactions', 
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V9a2 2 0 00-2-2H9z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3h6v4H9V3z" />
       </svg>
     )
   },
@@ -51,6 +62,16 @@ const navigation = [
       </svg>
     )
   },
+  { 
+    name: 'Branches', 
+    href: '/branches', 
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9l9-6 9 6v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 22V12h6v10" />
+      </svg>
+    )
+  },
 ]
 
 export default function Sidebar() {
@@ -59,7 +80,7 @@ export default function Sidebar() {
 
   return (
     <div className={`
-      flex flex-col h-screen
+      flex flex-col h-full
       ${isCollapsed ? 'w-16' : 'w-64'} 
       bg-white dark:bg-gray-900 shadow-large border-r border-gray-200 dark:border-gray-800
       transition-all duration-300 ease-in-out
@@ -74,8 +95,8 @@ export default function Sidebar() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Fleet</h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Manager</p>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Emaadi Trading</h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Transport and Trading</p>
               </div>
             </div>
           )}
@@ -120,6 +141,15 @@ export default function Sidebar() {
 
         {/* Footer */}
         <div className="p-3 border-t border-gray-200 dark:border-gray-800">
+          <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between mb-4'}`}>
+            <ThemeToggle />
+            {/* {!isCollapsed && (
+              <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>Online</span>
+              </div>
+            )} */}
+          </div>
           {!isCollapsed && (
             <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
               <p>Emadi</p>

@@ -44,7 +44,7 @@
 ## 📱 Mobile Experience
 
 ### Bottom Navigation
-- **5-Tab Layout**: Dashboard, Expenses, Purchases, Categories, Vehicles
+- **5-Tab Layout**: Dashboard, Expenses, Categories, Vehicles, Branches
 - **Active States**: Visual feedback for current page
 - **Touch Optimized**: Proper touch targets and spacing
 - **Smooth Transitions**: Animated state changes

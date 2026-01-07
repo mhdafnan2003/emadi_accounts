@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { IVehicleWithId } from '@/types'
+import { IBranchWithId, IVehicleWithId } from '@/types'
 
 interface VehicleFormProps {
   vehicle?: IVehicleWithId | null
@@ -17,26 +17,43 @@ export default function VehicleForm({
   onCancel 
 }: VehicleFormProps) {
   const [formData, setFormData] = useState({
-    vehicleName: '',
     vehicleNumber: '',
     driverName: '',
     coPassengerName: '',
+    branchId: '',
   })
+  const [branches, setBranches] = useState<IBranchWithId[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await fetch('/api/branches')
+        const data = await response.json()
+        if (data.success) {
+          setBranches(data.data)
+        }
+      } catch (err) {
+        // Non-blocking: vehicle creation should still work without branches.
+      }
+    }
+
+    fetchBranches()
+  }, [])
+
+  useEffect(() => {
     if (vehicle) {
       setFormData({
-        vehicleName: vehicle.vehicleName,
         vehicleNumber: vehicle.vehicleNumber,
         driverName: vehicle.driverName,
         coPassengerName: vehicle.coPassengerName,
+        branchId: vehicle.branchId || '',
       })
     }
   }, [vehicle])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -53,12 +70,19 @@ export default function VehicleForm({
       const url = vehicle ? `/api/vehicles/${vehicle._id}` : '/api/vehicles'
       const method = vehicle ? 'PUT' : 'POST'
 
+      const payload = {
+        vehicleNumber: formData.vehicleNumber,
+        driverName: formData.driverName,
+        coPassengerName: formData.coPassengerName,
+        branchId: formData.branchId || undefined,
+      }
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
@@ -72,10 +96,10 @@ export default function VehicleForm({
         
         if (!vehicle) {
           setFormData({
-            vehicleName: '',
             vehicleNumber: '',
             driverName: '',
             coPassengerName: '',
+            branchId: '',
           })
         }
       } else {
@@ -97,19 +121,23 @@ export default function VehicleForm({
         )}
 
         <div>
-          <label htmlFor="vehicleName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Vehicle Name
+          <label htmlFor="branchId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Branch
           </label>
-          <input
-            type="text"
-            id="vehicleName"
-            name="vehicleName"
-            value={formData.vehicleName}
+          <select
+            id="branchId"
+            name="branchId"
+            value={formData.branchId}
             onChange={handleChange}
-            required
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            placeholder="Enter vehicle name"
-          />
+          >
+            <option value="">No branch</option>
+            {branches.map((branch) => (
+              <option key={branch._id} value={branch._id}>
+                {branch.branchName}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

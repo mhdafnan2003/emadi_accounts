@@ -1,6 +1,6 @@
 # Fleet Manager - Professional Vehicle Management System
 
-A modern, responsive Next.js application for comprehensive vehicle fleet management with expense tracking, fuel purchase monitoring, and analytics.
+A modern, responsive Next.js application for comprehensive vehicle fleet management with expense tracking and analytics.
 
 ## ✨ Features
 
@@ -15,12 +15,6 @@ A modern, responsive Next.js application for comprehensive vehicle fleet managem
 - Real-time expense monitoring
 - Monthly and yearly analytics
 - Custom expense categories
-
-### ⛽ Fuel Purchase Management
-- Fuel purchase tracking
-- Trip-based fuel logging
-- Cost analysis and reporting
-- Fuel efficiency monitoring
 
 ### 🎨 Modern UI/UX
 - **Fully Responsive**: Optimized for mobile, tablet, and desktop
@@ -115,7 +109,6 @@ The application is fully responsive across all device sizes:
 │   ├── api/               # API routes
 │   ├── categories/        # Category management
 │   ├── expenses/          # Expense tracking
-│   ├── purchases/         # Fuel purchases
 │   ├── vehicles/          # Vehicle management
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
@@ -130,7 +123,6 @@ The application is fully responsive across all device sizes:
 ├── models/               # Database models
 │   ├── Category.ts
 │   ├── Expense.ts
-│   ├── Purchase.ts
 │   ├── Trip.ts
 │   └── Vehicle.ts
 └── public/               # Static assets
@@ -172,12 +164,6 @@ The application supports both light and dark modes:
 - Category assignment
 - Date and vehicle association
 - Receipt attachments
-
-### Purchase (Fuel)
-- Fuel type and quantity
-- Cost and location
-- Trip association
-- Odometer readings
 
 ### Category
 - Name and description

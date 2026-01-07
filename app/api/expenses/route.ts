@@ -2,10 +2,28 @@ import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import Expense from '@/models/Expense'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await dbConnect()
-    const expenses = await Expense.find({}).sort({ date: -1 })
+
+    // By default, show only expenses created from the Expenses section
+    // (i.e., normal/manual expenses). System-generated entries like Purchase & Sale
+    // opening/collection and manual revenue adjustments are stored with
+    // expenseType: 'investment' or 'revenue' and should not appear here.
+    const url = new URL(request.url)
+    const includeAll = url.searchParams.get('includeAll') === 'true'
+
+    const match = includeAll
+      ? {}
+      : {
+        $or: [
+          { expenseType: { $exists: false } },
+          { expenseType: null },
+          { expenseType: 'other' },
+        ],
+      }
+
+    const expenses = await Expense.find(match).sort({ date: -1 })
     return NextResponse.json({ success: true, data: expenses })
   } catch (error) {
     return NextResponse.json(

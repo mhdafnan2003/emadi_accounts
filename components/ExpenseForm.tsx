@@ -1,11 +1,12 @@
 'use client'
 
 import React from 'react'
-import { IExpenseWithId, IVehicleWithId, ICategoryWithId } from '@/types'
+import { IExpenseWithId, IVehicleWithId, ICategoryWithId, IBranchWithId } from '@/types'
 
 interface ExpenseFormProps {
   vehicles: IVehicleWithId[]
   categories: ICategoryWithId[]
+  branches: IBranchWithId[]
   expense?: IExpenseWithId | null
   onExpenseAdded: (expense: IExpenseWithId) => void
   onExpenseUpdated: (expense: IExpenseWithId) => void
@@ -15,6 +16,7 @@ interface ExpenseFormProps {
 export default function ExpenseForm({ 
   vehicles, 
   categories,
+  branches,
   expense, 
   onExpenseAdded, 
   onExpenseUpdated,
@@ -26,6 +28,7 @@ export default function ExpenseForm({
     category: '',
     description: '',
     date: new Date().toISOString().split('T')[0],
+    branchId: '',
     vehicleId: '',
     vehicleName: '',
   })
@@ -40,6 +43,7 @@ export default function ExpenseForm({
         category: expense.category,
         description: expense.description || '',
         date: new Date(expense.date).toISOString().split('T')[0],
+        branchId: expense.branchId || '',
         vehicleId: expense.vehicleId || '',
         vehicleName: expense.vehicleName || '',
       })
@@ -55,6 +59,11 @@ export default function ExpenseForm({
         ...prev,
         vehicleId: value,
         vehicleName: selectedVehicle ? selectedVehicle.vehicleName : '',
+      }))
+    } else if (name === 'branchId') {
+      setFormData(prev => ({
+        ...prev,
+        branchId: value,
       }))
     } else if (name === 'category') {
       // Clear vehicle selection if category is not Maintenance or Fuel
@@ -83,6 +92,7 @@ export default function ExpenseForm({
         ...formData,
         amount: parseFloat(formData.amount),
         date: new Date(formData.date),
+        branchId: formData.branchId || undefined,
       }
 
       const url = expense ? `/api/expenses/${expense._id}` : '/api/expenses'
@@ -112,6 +122,7 @@ export default function ExpenseForm({
             category: '',
             description: '',
             date: new Date().toISOString().split('T')[0],
+            branchId: '',
             vehicleId: '',
             vehicleName: '',
           })
@@ -129,14 +140,14 @@ export default function ExpenseForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded">
           {error}
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Expense Title *
           </label>
           <input
@@ -146,13 +157,13 @@ export default function ExpenseForm({
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-400"
             placeholder="Enter expense title"
           />
         </div>
 
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Amount (ر.س) *
           </label>
           <input
@@ -164,13 +175,13 @@ export default function ExpenseForm({
             required
             min="0"
             step="0.01"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-400"
             placeholder="0.00"
           />
         </div>
 
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Category *
           </label>
           <select
@@ -179,7 +190,7 @@ export default function ExpenseForm({
             value={formData.category}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           >
             <option value="">Select category</option>
             {categories.map(cat => (
@@ -189,7 +200,27 @@ export default function ExpenseForm({
         </div>
 
         <div>
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="branchId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Branch
+          </label>
+          <select
+            id="branchId"
+            name="branchId"
+            value={formData.branchId}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+          >
+            <option value="">No branch</option>
+            {branches.map((branch) => (
+              <option key={branch._id} value={branch._id}>
+                {branch.branchName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Date *
           </label>
           <input
@@ -199,13 +230,13 @@ export default function ExpenseForm({
             value={formData.date}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           />
         </div>
 
         {(formData.category === 'Maintenance' || formData.category === 'Fuel') && (
           <div>
-            <label htmlFor="vehicleId" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="vehicleId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Vehicle *
             </label>
             <select
@@ -214,7 +245,7 @@ export default function ExpenseForm({
               value={formData.vehicleId}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             >
               <option value="">Select vehicle</option>
               {vehicles.map(vehicle => (
@@ -228,7 +259,7 @@ export default function ExpenseForm({
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Description
         </label>
         <textarea
@@ -237,7 +268,7 @@ export default function ExpenseForm({
           value={formData.description}
           onChange={handleChange}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-400"
           placeholder="Additional details about the expense"
         />
       </div>
@@ -255,7 +286,7 @@ export default function ExpenseForm({
           <button
             type="button"
             onClick={onCancel}
-            className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
             Cancel
           </button>

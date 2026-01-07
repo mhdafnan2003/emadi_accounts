@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ITripWithId, IPurchaseWithId, IVehicleWithId } from '@/types'
+import { ITripWithId, IVehicleWithId } from '@/types'
 
 interface ExportButtonProps {
   vehicle: IVehicleWithId
@@ -12,32 +12,6 @@ interface ExportButtonProps {
 export default function ExportButton({ vehicle, trips, selectedMonth }: ExportButtonProps) {
   const [exporting, setExporting] = useState(false)
   const [exportFormat, setExportFormat] = useState<'csv' | 'json'>('csv')
-
-  const fetchAllPurchases = async (vehicleId: string, month?: string) => {
-    try {
-      let url = `/api/purchases?vehicleId=${vehicleId}`
-      const response = await fetch(url)
-      const data = await response.json()
-      
-      if (data.success) {
-        let purchases = data.data
-        
-        // Filter by month if specified
-        if (month) {
-          purchases = purchases.filter((purchase: IPurchaseWithId) => {
-            const purchaseMonth = new Date(purchase.date).toISOString().slice(0, 7)
-            return purchaseMonth === month
-          })
-        }
-        
-        return purchases
-      }
-      return []
-    } catch (error) {
-      console.error('Error fetching purchases:', error)
-      return []
-    }
-  }
 
   const exportToCSV = (data: any[], filename: string) => {
     if (data.length === 0) {
@@ -95,7 +69,7 @@ export default function ExportButton({ vehicle, trips, selectedMonth }: ExportBu
     document.body.removeChild(link)
   }
 
-  const handleExport = async (type: 'trips' | 'purchases' | 'summary') => {
+  const handleExport = async (type: 'trips' | 'summary') => {
     setExporting(true)
     
     try {
@@ -128,27 +102,6 @@ export default function ExportButton({ vehicle, trips, selectedMonth }: ExportBu
             exportToCSV(tripsData, tripsFilename)
           } else {
             exportToJSON(tripsData, tripsFilename)
-          }
-          break
-
-        case 'purchases':
-          const purchases = await fetchAllPurchases(vehicle._id!, selectedMonth)
-          const purchasesData = purchases.map((purchase: IPurchaseWithId) => ({
-            'Date': new Date(purchase.date).toLocaleDateString(),
-            'Trip Name': purchase.tripName,
-            'Vehicle': `${purchase.vehicleName} (${purchase.vehicleNumber})`,
-            'Transaction Type': purchase.type,
-            'Price (SAR)': purchase.price,
-            'Litres': purchase.litre,
-            'Price per Litre (SAR)': (purchase.price / purchase.litre).toFixed(2),
-            'Month': new Date(purchase.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
-          }))
-          
-          const purchasesFilename = `${vehicle.vehicleName}_transactions${monthSuffix}_${dateStr}.${exportFormat}`
-          if (exportFormat === 'csv') {
-            exportToCSV(purchasesData, purchasesFilename)
-          } else {
-            exportToJSON(purchasesData, purchasesFilename)
           }
           break
 
@@ -231,14 +184,6 @@ export default function ExportButton({ vehicle, trips, selectedMonth }: ExportBu
               >
                 <span>🚛</span>
                 <span>Trips Data</span>
-              </button>
-              <button
-                onClick={() => handleExport('purchases')}
-                disabled={exporting}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
-              >
-                <span>💰</span>
-                <span>All Transactions</span>
               </button>
             </div>
           </div>

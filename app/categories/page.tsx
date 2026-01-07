@@ -32,8 +32,8 @@ export default function CategoriesPage() {
   }, [])
 
   const handleCategoryAdded = (newCategory: ICategoryWithId) => {
-    setCategories([...categories, newCategory])
-    setShowForm(false)
+    setCategories((prev) => [...prev, newCategory])
+    // Keep modal open so user can add next category.
   }
 
   const handleCategoryUpdated = (updatedCategory: ICategoryWithId) => {
@@ -85,30 +85,54 @@ export default function CategoriesPage() {
 
       {/* Add/Edit Category Form */}
       {showForm && (
-        <Card className="animate-slide-down">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-              <span>{editingCategory ? 'Edit Category' : 'Add New Category'}</span>
-            </CardTitle>
-            <CardDescription>
-              {editingCategory 
-                ? 'Update the category details below' 
-                : 'Create a new category to organize your expenses'
-              }
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CategoryForm
-              category={editingCategory}
-              onCategoryAdded={handleCategoryAdded}
-              onCategoryUpdated={handleCategoryUpdated}
-              onCancel={handleCancelEdit}
-            />
-          </CardContent>
-        </Card>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Backdrop */}
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={handleCancelEdit}
+            className="absolute inset-0 bg-black/40"
+          />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-2xl">
+            <Card className="animate-slide-down">
+              <CardHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <CardTitle className="flex items-center space-x-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      </svg>
+                      <span>{editingCategory ? 'Edit Category' : 'Add New Category'}</span>
+                    </CardTitle>
+                    <CardDescription>
+                      {editingCategory
+                        ? 'Update the category details below'
+                        : 'Create a new category to organize your expenses'
+                      }
+                    </CardDescription>
+                  </div>
+                  <Button type="button" variant="ghost" onClick={handleCancelEdit}>
+                    ✕
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CategoryForm
+                  category={editingCategory}
+                  onCategoryAdded={handleCategoryAdded}
+                  onCategoryUpdated={handleCategoryUpdated}
+                  onCancel={handleCancelEdit}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       )}
 
       {/* Category List */}
@@ -122,7 +146,7 @@ export default function CategoriesPage() {
                 </svg>
                 <span>All Categories</span>
               </CardTitle>
-              <CardDescription>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {loading ? (
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 loading-spinner" />
@@ -131,7 +155,7 @@ export default function CategoriesPage() {
                 ) : (
                   `${categories.length} categor${categories.length !== 1 ? 'ies' : 'y'} total`
                 )}
-              </CardDescription>
+              </div>
             </div>
             {categories.length > 0 && (
               <div className="text-sm text-gray-500 dark:text-gray-400">

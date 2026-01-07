@@ -1,19 +1,55 @@
 'use client'
 
-import React, { useState } from 'react'
-import { IExpenseWithId, ICategoryWithId } from '@/types'
+import React, { useEffect, useMemo, useState } from 'react'
+import { IBranchWithId, IExpenseWithId, ICategoryWithId } from '@/types'
 import { formatSAR } from '@/lib/utils'
 
 interface ExpenseListProps {
   expenses: IExpenseWithId[]
   categories: ICategoryWithId[]
+  branches?: IBranchWithId[]
   loading: boolean
   onEdit: (expense: IExpenseWithId) => void
   onDelete: (expenseId: string) => void
 }
 
-export default function ExpenseList({ expenses, categories, loading, onEdit, onDelete }: ExpenseListProps) {
+export default function ExpenseList({ expenses, categories, branches: branchesProp, loading, onEdit, onDelete }: ExpenseListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [branchesFallback, setBranchesFallback] = useState<IBranchWithId[]>([])
+
+  useEffect(() => {
+    if (branchesProp) return
+    const fetchBranches = async () => {
+      try {
+        const response = await fetch('/api/branches')
+        const data = await response.json()
+        if (data.success) {
+          setBranchesFallback(data.data)
+        }
+      } catch {
+        // Non-blocking
+      }
+    }
+
+    fetchBranches()
+  }, [branchesProp])
+
+  const branches = branchesProp ?? branchesFallback
+
+  const branchNameById = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const branch of branches) {
+      map.set(branch._id, branch.branchName)
+    }
+    return map
+  }, [branches])
+
+  const getExpenseBranchLabel = useMemo(() => {
+    return (expense: IExpenseWithId) => {
+      if (!expense.branchId) return '—'
+      return branchNameById.get(expense.branchId) || 'Unknown branch'
+    }
+  }, [branchNameById])
 
   const handleDelete = async (expense: IExpenseWithId) => {
     if (!expense._id) return
@@ -79,7 +115,7 @@ export default function ExpenseList({ expenses, categories, loading, onEdit, onD
       <div className="text-center py-12">
         <div className="text-gray-400 dark:text-gray-500 text-6xl mb-4">💰</div>
         <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No expenses yet</h3>
-        <p className="text-gray-500 dark:text-gray-400">Click "Add Expense" to get started.</p>
+        <p className="text-gray-500 dark:text-gray-400">Click &quot;Add Expense&quot; to get started.</p>
       </div>
     )
   }
@@ -148,9 +184,13 @@ export default function ExpenseList({ expenses, categories, loading, onEdit, onD
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <div className="flex items-center">
+                      <span className="text-gray-400 dark:text-gray-500 mr-1">🏢</span>
+                      <span>{getExpenseBranchLabel(expense)}</span>
+                    </div>
                     {expense.vehicleName && (
                       <div className="flex items-center">
-                        <span className="text-gray-400 dark:text-gray-500 mr-1">🚗</span>
+                        <span className="text-gray-400 dark:text-gray-500 mr-1"></span>
                         <span>{expense.vehicleName}</span>
                       </div>
                     )}

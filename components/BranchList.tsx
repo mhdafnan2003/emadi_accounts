@@ -1,43 +1,41 @@
 'use client'
 
 import { useState } from 'react'
-import { ICategoryWithId } from '@/types'
-import { Button } from '@/components/ui/Button'
-import { formatDate } from '@/lib/utils'
+import { IBranchWithId } from '@/types'
 
-interface CategoryListProps {
-  categories: ICategoryWithId[]
+interface BranchListProps {
+  branches: IBranchWithId[]
   loading: boolean
-  onEdit: (category: ICategoryWithId) => void
-  onDelete: (categoryId: string) => void
+  onEdit: (branch: IBranchWithId) => void
+  onDelete: (branchId: string) => void
 }
 
-export default function CategoryList({ categories, loading, onEdit, onDelete }: CategoryListProps) {
+export default function BranchList({ branches, loading, onEdit, onDelete }: BranchListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleDelete = async (category: ICategoryWithId) => {
-    if (!category._id) return
-    
-    if (!confirm(`Are you sure you want to delete "${category.name}" category?`)) {
+  const handleDelete = async (branch: IBranchWithId) => {
+    if (!branch._id) return
+
+    if (!confirm(`Are you sure you want to delete "${branch.branchName}"?`)) {
       return
     }
 
-    setDeletingId(category._id)
-    
+    setDeletingId(branch._id)
+
     try {
-      const response = await fetch(`/api/categories/${category._id}`, {
+      const response = await fetch(`/api/branches/${branch._id}`, {
         method: 'DELETE',
       })
 
       const data = await response.json()
 
       if (data.success) {
-        onDelete(category._id)
+        onDelete(branch._id)
       } else {
-        alert('Failed to delete category')
+        alert('Failed to delete branch')
       }
     } catch (error) {
-      alert('Error deleting category')
+      alert('Error deleting branch')
     } finally {
       setDeletingId(null)
     }
@@ -50,13 +48,16 @@ export default function CategoryList({ categories, loading, onEdit, onDelete }: 
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Name
+                Branch
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Description
+                Phone
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Created
+                Address
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Added
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Actions
@@ -67,10 +68,13 @@ export default function CategoryList({ categories, loading, onEdit, onDelete }: 
             {[...Array(5)].map((_, i) => (
               <tr key={i} className="animate-pulse">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-40"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2"></div>
                 </td>
-                <td className="px-6 py-4">
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-64"></div>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-56"></div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
@@ -89,23 +93,12 @@ export default function CategoryList({ categories, loading, onEdit, onDelete }: 
     )
   }
 
-  if (categories.length === 0) {
+  if (branches.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-          No categories yet
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Create your first category to start organizing expenses
-        </p>
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          Categories help you track and analyze different types of expenses
-        </div>
+        <div className="text-gray-400 dark:text-gray-500 text-6xl mb-4"></div>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No branches yet</h3>
+        <p className="text-gray-500 dark:text-gray-400">Click &quot;Add Branch&quot; to get started.</p>
       </div>
     )
   }
@@ -116,13 +109,16 @@ export default function CategoryList({ categories, loading, onEdit, onDelete }: 
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Name
+              Branch
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Description
+              Phone
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-              Created
+              Address
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Added
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               Actions
@@ -130,38 +126,39 @@ export default function CategoryList({ categories, loading, onEdit, onDelete }: 
           </tr>
         </thead>
         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          {categories.map((category) => (
-            <tr key={category._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          {branches.map((branch) => (
+            <tr key={branch._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {category.name}
-                </div>
+                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{branch.branchName}</div>
               </td>
-              <td className="px-6 py-4">
-                <div className="text-sm text-gray-600 dark:text-gray-300 max-w-xl truncate" title={category.description}>
-                  {category.description || '—'}
-                </div>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-600 dark:text-gray-300">{branch.phoneNumber || '-'}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-600 dark:text-gray-300">{branch.address || '-'}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-600 dark:text-gray-300">
-                  {formatDate(category.createdAt)}
+                  {new Date(branch.createdAt).toLocaleDateString()}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right">
-                <div className="inline-flex items-center gap-2">
-                  <Button size="sm" variant="ghost" onClick={() => onEdit(category)} title="Edit category">
-                    ✏️
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleDelete(category)}
-                    loading={deletingId === category._id}
-                    className="text-red-600 hover:text-red-700"
-                    title="Delete category"
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => onEdit(branch)}
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 p-2 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                    title="Edit branch"
                   >
-                    🗑️
-                  </Button>
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => handleDelete(branch)}
+                    disabled={deletingId === branch._id}
+                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                    title="Delete branch"
+                  >
+                    {deletingId === branch._id ? '⏳' : '🗑️'}
+                  </button>
                 </div>
               </td>
             </tr>

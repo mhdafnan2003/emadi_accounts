@@ -19,6 +19,12 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect()
     const body = await request.json()
+
+    // vehicleName is optional now; keep backward compatibility by defaulting
+    // to vehicleNumber when omitted.
+    if (!body.vehicleName && body.vehicleNumber) {
+      body.vehicleName = body.vehicleNumber
+    }
     
     const vehicle = await Vehicle.create(body)
     return NextResponse.json({ success: true, data: vehicle }, { status: 201 })
