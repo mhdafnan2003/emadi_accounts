@@ -17,7 +17,7 @@ export interface IPurchaseSale {
   updatedAt?: Date
 }
 
-export interface IPurchaseSaleDocument extends IPurchaseSale, Document {}
+export interface IPurchaseSaleDocument extends IPurchaseSale, Document { }
 
 const PurchaseSaleSchema = new mongoose.Schema<IPurchaseSaleDocument>({
   date: {
@@ -47,13 +47,13 @@ const PurchaseSaleSchema = new mongoose.Schema<IPurchaseSaleDocument>({
     required: [true, 'Opening balance is required'],
     min: [0, 'Opening balance must be positive'],
   },
-  // currentBalance: {
-  //   type: Number,
-  //   min: [0, 'Current balance must be positive'],
-  //   default: function (this: IPurchaseSaleDocument) {
-  //     return this.openingBalance
-  //   },
-  // },
+  currentBalance: {
+    type: Number,
+    min: [0, 'Current balance must be positive'],
+    default: function (this: IPurchaseSaleDocument) {
+      return this.openingBalance
+    },
+  },
   currentTins: {
     type: Number,
     min: [0, 'Current tins must be positive'],
