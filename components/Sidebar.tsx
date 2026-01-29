@@ -173,6 +173,11 @@ export default function Sidebar() {
           </div>
         )}
 
+         {/* Theme Toggle */}
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+          <ThemeToggle />
+        </div>
+
         {/* Logout Button */}
         <button
           onClick={handleLogout}
@@ -189,10 +194,7 @@ export default function Sidebar() {
           {!isCollapsed && <span className="ml-3">Logout</span>}
         </button>
 
-        {/* Theme Toggle */}
-        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-          <ThemeToggle />
-        </div>
+       
 
         {!isCollapsed && (
           <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
